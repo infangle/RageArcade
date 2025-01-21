@@ -1,50 +1,48 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'game2.dart';
 import 'widgets/attack_icon_list.dart';
 import 'widgets/boss_dialogue.dart';
 import 'models/attacks.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+class Game2 extends StatefulWidget {
+  final int currentScore;
+  final int highestScore;
+  final bool isMusicOn;
+  final int bossHealth;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Rage Arcade',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyGame(),
-    );
-  }
-}
-
-class MyGame extends StatefulWidget {
-  const MyGame({super.key});
+  const Game2({
+    super.key,
+    required this.currentScore,
+    required this.highestScore,
+    required this.isMusicOn,
+    required this.bossHealth,
+  });
 
   @override
-  _MyGameState createState() => _MyGameState();
+  _Game2State createState() => _Game2State();
 }
 
-class _MyGameState extends State<MyGame> {
+class _Game2State extends State<Game2> {
   String? _bossDialogue;
   int currentScore = 0;
   int highestScore = 0;
   bool isMusicOn = true;
   int _bossHealth = 100;
   Timer? _healthRegenTimer;
-  late List<Attack> levelAttacks;
+
+  late List<Attack> level2Attacks;
 
   @override
   void initState() {
     super.initState();
-    // Initialize level-specific attacks (level 1 initially)
-    levelAttacks = attacks.where((attack) => attack.level == 1).toList();
+    currentScore = widget.currentScore;
+    highestScore = widget.highestScore;
+    isMusicOn = widget.isMusicOn;
+    _bossHealth = widget.bossHealth;
+
+    // Filter attacks for Level 2
+    level2Attacks = attacks.where((attack) => attack.level == 2).toList();
+
     _startHealthRegenTimer();
   }
 
@@ -71,7 +69,7 @@ class _MyGameState extends State<MyGame> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Level 1"),
+        title: const Text("Level 2"),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -113,8 +111,7 @@ class _MyGameState extends State<MyGame> {
               children: [
                 Positioned.fill(
                   child: Image.asset(
-                    'lib/assets/images/boss.jpg',
-                    fit: BoxFit.cover,
+                    'lib/assets/images/boss2.jpg',
                   ),
                 ),
                 if (_bossDialogue != null)
@@ -167,7 +164,7 @@ class _MyGameState extends State<MyGame> {
             flex: 1,
             child: AttackIconList(
               onAttack: _performAttack,
-              attacks: levelAttacks, // Dynamically updated based on the level
+              attacks: level2Attacks, // Use Level 2 attacks
             ),
           ),
         ],
@@ -179,7 +176,7 @@ class _MyGameState extends State<MyGame> {
     int damageValue = int.parse(attack.damage.split('/')[0]);
 
     setState(() {
-      _bossDialogue = attack.dialogue1;
+      _bossDialogue = attack.dialogue2; // Different dialogue for Level 2
       currentScore += damageValue;
       if (currentScore > highestScore) {
         highestScore = currentScore;
@@ -188,28 +185,6 @@ class _MyGameState extends State<MyGame> {
       _bossHealth -= damageValue;
       if (_bossHealth < 0) _bossHealth = 0;
     });
-
-    if (_bossHealth <= 50) {
-      // Switch to level 2
-      setState(() {
-        levelAttacks = attacks
-            .where((attack) => attack.level == 2)
-            .toList(); // Replace attacks with level 2
-      });
-
-      // Navigate to game2.dart with level 2 data
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Game2(
-            currentScore: currentScore,
-            highestScore: highestScore,
-            isMusicOn: isMusicOn,
-            bossHealth: _bossHealth,
-          ),
-        ),
-      );
-    }
 
     _startHealthRegenTimer();
 

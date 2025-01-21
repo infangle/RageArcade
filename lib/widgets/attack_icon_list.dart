@@ -14,30 +14,38 @@ class AttackIconList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          vertical: 16.0), // Add spacing above and below
+      padding:
+          const EdgeInsets.symmetric(vertical: 16.0), // Spacing above and below
       child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal, // Allow horizontal scrolling
         child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment.spaceEvenly, // Space icons evenly
           children: attacks.map((attack) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(attack.icon),
-                  iconSize: 36.0, // Set a consistent size for icons
-                  onPressed: () => onAttack(attack),
-                  tooltip: attack.name,
-                ),
-                Text(
-                  attack.name,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall, // Text below each icon
-                  textAlign: TextAlign.center,
-                ),
-              ],
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 12.0), // Add spacing between icons
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(attack.icon),
+                    iconSize: 48.0, // Increase icon size for better visibility
+                    color: Colors.blueAccent,
+                    // Gray if not clicked, blue if clicked
+                    onPressed: () {
+                      onAttack(attack);
+                    },
+                    tooltip: attack.name,
+                  ),
+                  Text(
+                    attack.name,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 12.0, // Consistent font size
+                          fontWeight: FontWeight.bold, // Emphasize attack names
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             );
           }).toList(),
         ),
