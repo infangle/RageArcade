@@ -15,6 +15,7 @@ class BossDialogue extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
+            // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.7),
             borderRadius: BorderRadius.circular(8),
           ),

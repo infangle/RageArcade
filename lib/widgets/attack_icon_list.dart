@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/attacks.dart';
 
 class AttackIconList extends StatelessWidget {
-  final Function(String) onAttack;
+  final Function(Attack) onAttack;
   final List<Attack> attacks;
 
   const AttackIconList({
@@ -13,23 +13,31 @@ class AttackIconList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 20, // Position it a bit below the center of the screen
-      left: 20, // Adjust positioning
-      right: 20, // Adjust positioning
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          vertical: 16.0), // Add spacing above and below
       child: SingleChildScrollView(
-        scrollDirection:
-            Axis.horizontal, // Make the list horizontally scrollable
         child: Row(
+          mainAxisAlignment:
+              MainAxisAlignment.spaceEvenly, // Space icons evenly
           children: attacks.map((attack) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: IconButton(
-                icon: Icon(attack.icon),
-                onPressed: () =>
-                    onAttack(attack.dialogue1), // Trigger attack dialogue
-                iconSize: 50, // Adjust icon size as needed
-              ),
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(attack.icon),
+                  iconSize: 36.0, // Set a consistent size for icons
+                  onPressed: () => onAttack(attack),
+                  tooltip: attack.name,
+                ),
+                Text(
+                  attack.name,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall, // Text below each icon
+                  textAlign: TextAlign.center,
+                ),
+              ],
             );
           }).toList(),
         ),
