@@ -3,13 +3,13 @@ import 'package:audioplayers/audioplayers.dart';
 
 class Audio extends StatefulWidget {
   final bool isMusicOn;
-  final String musicUrl; // Updated to use a web-based URL
+  final String musicUrl; // URL for web-based audio
   final ValueChanged<bool> onToggle;
 
   const Audio({
     Key? key,
     required this.isMusicOn,
-    required this.musicUrl, // Updated to accept a music URL
+    required this.musicUrl,
     required this.onToggle,
   }) : super(key: key);
 
@@ -33,13 +33,20 @@ class _AudioState extends State<Audio> {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(Audio oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isMusicOn != widget.isMusicOn) {
+      _toggleMusic();
+    }
+  }
+
   Future<void> _initializeMusic() async {
     try {
       await _audioPlayer.setReleaseMode(ReleaseMode.loop);
       if (widget.isMusicOn) {
-        await _audioPlayer
-            .setSourceUrl(widget.musicUrl); // Use web-based audio source
-        await _audioPlayer.resume();
+        await _audioPlayer.setSourceUrl(widget.musicUrl); // Set the source
+        await _audioPlayer.resume(); // Start playing
       }
     } catch (e) {
       debugPrint('Error initializing music: $e');
@@ -49,13 +56,12 @@ class _AudioState extends State<Audio> {
   Future<void> _toggleMusic() async {
     try {
       if (widget.isMusicOn) {
-        await _audioPlayer.pause();
+        await _audioPlayer.pause(); // Pause if music is currently on
       } else {
-        await _audioPlayer.setSourceUrl(
-            widget.musicUrl); // Ensure the URL is set before playing
-        await _audioPlayer.resume();
+        await _audioPlayer.setSourceUrl(widget.musicUrl); // Reset source
+        await _audioPlayer.resume(); // Play if music is off
       }
-      widget.onToggle(!widget.isMusicOn); // Notify parent of the toggle state
+      widget.onToggle(!widget.isMusicOn); // Notify parent about toggle
     } catch (e) {
       debugPrint('Error toggling music: $e');
     }
@@ -66,6 +72,7 @@ class _AudioState extends State<Audio> {
     return IconButton(
       icon: Icon(
         widget.isMusicOn ? Icons.music_note : Icons.music_off,
+        color: widget.isMusicOn ? Colors.blue : Colors.grey,
       ),
       onPressed: _toggleMusic,
     );

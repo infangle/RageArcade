@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'game2.dart'; // Next level screen
-import '../widgets/audio.dart'; // Audio widget
+
 import '../widgets/attack_icon_list.dart'; // Attack options widget
 import '../widgets/boss_dialogue.dart'; // Dialogue widget
 import '../models/attacks.dart'; // Attack model
+import '../widgets/audio.dart'; // Import the Audio widget
 
 class MyGame extends StatefulWidget {
   const MyGame({super.key});
@@ -21,6 +22,9 @@ class _MyGameState extends State<MyGame> {
   int _bossHealth = 100;
   Timer? _healthRegenTimer;
   late List<Attack> levelAttacks;
+
+  final String musicUrl =
+      'https://example.com/game-music.mp3'; // Replace with your music URL
 
   @override
   void initState() {
@@ -85,22 +89,18 @@ class _MyGameState extends State<MyGame> {
     });
   }
 
+  void _toggleMusic(bool isMusicEnabled) {
+    setState(() {
+      isMusicOn = isMusicEnabled;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Level 1"),
-        actions: [
-          // Replacing the audio widget with settings icon
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              // Add your settings logic here
-              print("Settings clicked");
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -120,16 +120,11 @@ class _MyGameState extends State<MyGame> {
                   "High Score: $highestScore",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                // Audio Icon
-                IconButton(
-                  icon: Icon(
-                    isMusicOn ? Icons.volume_up : Icons.volume_off,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isMusicOn = !isMusicOn;
-                    });
-                  },
+                // Audio Widget
+                Audio(
+                  isMusicOn: isMusicOn,
+                  musicUrl: musicUrl,
+                  onToggle: _toggleMusic,
                 ),
               ],
             ),
