@@ -41,6 +41,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+        backgroundColor: Colors.teal, // Turquoise theme
       ),
       body: Center(
         child: Padding(
@@ -79,6 +80,8 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: _login,
                   child: const Text('Login'),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal), // Turquoise theme
                 ),
                 TextButton(
                   onPressed: () {

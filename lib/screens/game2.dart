@@ -28,6 +28,7 @@ class _Game2State extends State<Game2> {
   late int _bossHealth;
   Timer? _healthRegenTimer;
   late List<Attack> level2Attacks;
+  DateTime? _lastAttackTime; // New variable to track the last attack time
 
   @override
   void initState() {
@@ -54,9 +55,13 @@ class _Game2State extends State<Game2> {
     _healthRegenTimer?.cancel();
     _healthRegenTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
       if (_bossHealth < 100) {
-        setState(() {
-          _bossHealth = (_bossHealth + 10).clamp(0, 100);
-        });
+        // Check if 8 seconds have passed since the last attack
+        if (_lastAttackTime != null &&
+            DateTime.now().difference(_lastAttackTime!).inSeconds >= 8) {
+          setState(() {
+            _bossHealth = (_bossHealth + 10).clamp(0, 100);
+          });
+        }
       }
     });
   }
@@ -69,10 +74,13 @@ class _Game2State extends State<Game2> {
       currentScore += damageValue;
       highestScore = currentScore > highestScore ? currentScore : highestScore;
 
-      _bossHealth -= damageValue;
+      _bossHealth -= damageValue; // Decrease boss health by damage value
 
-      if (_bossHealth <= 50 && _bossHealth > 0) {
-        _bossHealth = 50; // Freeze health at 50
+      // Update the last attack time
+      _lastAttackTime = DateTime.now();
+
+      // Trigger game over if boss health becomes greater than 50
+      if (_bossHealth >= 50) {
         _showGameOverPopup();
       } else if (_bossHealth <= 0) {
         _bossHealth = 0;
@@ -115,13 +123,17 @@ class _Game2State extends State<Game2> {
                   icon: const Icon(Icons.home, size: 32),
                   onPressed: () =>
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/',
+                    '/home', // Navigate to home.dart
                     (route) => false,
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.restart_alt, size: 32),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () =>
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/game', // Navigate to game.dart
+                    (route) => false,
+                  ),
                 ),
               ],
             ),

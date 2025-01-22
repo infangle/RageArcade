@@ -47,6 +47,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
+        backgroundColor: Colors.teal, // Turquoise theme
       ),
       body: Center(
         child: Padding(
@@ -116,6 +117,22 @@ class _SignUpPageState extends State<SignUpPage> {
                 ElevatedButton(
                   onPressed: _signUp,
                   child: const Text('Sign Up'),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal), // Turquoise theme
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                    );
+                    const SizedBox(height: 24);
+                  },
+
+                  child: const Text('Already have an account? Log in',
+                      style: TextStyle(color: Colors.teal)), // Turquoise theme
                 ),
               ],
             ),
