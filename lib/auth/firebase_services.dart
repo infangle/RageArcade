@@ -35,4 +35,18 @@ class FirebaseService {
       throw Exception('Registration failed: $e');
     }
   }
+
+  Future<UserCredential> loginWithEmailPassword(
+      String email, String password) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return userCredential; // Return the UserCredential
+    } catch (e) {
+      // Handle the error
+      throw Exception('Login failed: $e');
+    }
+  }
 }
