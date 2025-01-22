@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/game.dart'; // Import the MyGame class
+import 'screens/splashscreen.dart'; // Import the SplashScreen class
+import 'screens/game.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,6 +8,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,8 +17,40 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Rage Arcade'),
+      home: const SplashScreenWrapper(), // Splash screen as the starting page
     );
+  }
+}
+
+class SplashScreenWrapper extends StatefulWidget {
+  const SplashScreenWrapper({super.key});
+
+  @override
+  State<SplashScreenWrapper> createState() => _SplashScreenWrapperState();
+}
+
+class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
+  @override
+  void initState() {
+    super.initState();
+    _navigateToHome();
+  }
+
+  void _navigateToHome() async {
+    await Future.delayed(const Duration(seconds: 5)); // Splash screen duration
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MyHomePage(title: 'Rage Arcade'),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const SplashScreen(); // Display the splash screen
   }
 }
 

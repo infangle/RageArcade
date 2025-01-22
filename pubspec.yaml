@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  audioplayers: ^6.1.0 # Updated to the latest version of audioplayers
+  audioplayers: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -22,4 +22,5 @@ flutter:
   assets:
     - lib/assets/images/boss.jpg
     - lib/assets/images/boss2.jpg
+    - lib/assets/images/logo.png
     - lib/assets/audio/bgmusic.mp3

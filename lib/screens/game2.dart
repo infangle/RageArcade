@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/attack_icon_list.dart';
 import '../widgets/boss_dialogue.dart';
 import '../models/attacks.dart';
-import '../widgets/audio.dart'; // Import the custom Audio widget
+// Import the custom Audio widget
 
 class Game2 extends StatefulWidget {
   final int currentScore;
