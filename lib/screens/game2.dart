@@ -8,14 +8,12 @@ class Game2 extends StatefulWidget {
   final int currentScore;
   final int highestScore;
   final bool isMusicOn;
-  final int bossHealth;
 
   const Game2({
     super.key,
     required this.currentScore,
     required this.highestScore,
     required this.isMusicOn,
-    required this.bossHealth,
   });
 
   @override
@@ -37,7 +35,7 @@ class _Game2State extends State<Game2> {
     currentScore = widget.currentScore;
     highestScore = widget.highestScore;
     isMusicOn = widget.isMusicOn;
-    _bossHealth = widget.bossHealth;
+    _bossHealth = 49; // Initial boss HP
 
     // Filter attacks for Level 2
     level2Attacks = attacks.where((attack) => attack.level == 2).toList();
@@ -52,14 +50,14 @@ class _Game2State extends State<Game2> {
   }
 
   void _startHealthRegenTimer() {
+    // Start or restart the health regeneration timer
     _healthRegenTimer?.cancel();
     _healthRegenTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
-      setState(() {
-        if (_bossHealth < 100) {
-          _bossHealth += 10;
-          if (_bossHealth > 100) _bossHealth = 100;
-        }
-      });
+      if (_bossHealth < 100) {
+        setState(() {
+          _bossHealth = (_bossHealth + 10).clamp(0, 100);
+        });
+      }
     });
   }
 
@@ -67,21 +65,24 @@ class _Game2State extends State<Game2> {
     int damageValue = int.parse(attack.damage.split('/')[0]);
 
     setState(() {
-      _bossDialogue = attack.dialogue2; // Dialogue specific to Level 2
+      _bossDialogue = attack.dialogue2; // Level 2-specific dialogue
       currentScore += damageValue;
-      if (currentScore > highestScore) {
-        highestScore = currentScore;
-      }
+      highestScore = currentScore > highestScore ? currentScore : highestScore;
 
       _bossHealth -= damageValue;
-      if (_bossHealth <= 0) {
+
+      if (_bossHealth <= 50 && _bossHealth > 0) {
+        _bossHealth = 50; // Freeze health at 50
+        _showGameOverPopup();
+      } else if (_bossHealth <= 0) {
         _bossHealth = 0;
-        _showWinnerPopup(); // Show the winner pop-up
+        _showWinnerPopup();
       }
     });
 
     _startHealthRegenTimer();
 
+    // Clear dialogue after a delay
     Future.delayed(const Duration(seconds: 5), () {
       setState(() {
         _bossDialogue = null;
@@ -89,54 +90,85 @@ class _Game2State extends State<Game2> {
     });
   }
 
+  void _showGameOverPopup() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text("Game Over!", textAlign: TextAlign.center),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "The boss has regained its strength! Try again.",
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8.0),
+            Text("Score: $currentScore"),
+            const SizedBox(height: 4.0),
+            Text("High Score: $highestScore"),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.home, size: 32),
+                  onPressed: () =>
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/',
+                    (route) => false,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.restart_alt, size: 32),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showWinnerPopup() {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text(
-            "Congratulations!",
-            textAlign: TextAlign.center,
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "You defeated the boss!\nYour Score: $currentScore",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Navigate to the home screen
-                  IconButton(
-                    icon: const Icon(Icons.home, size: 32),
-                    onPressed: () {
+      builder: (context) => AlertDialog(
+        title: const Text("Congratulations!", textAlign: TextAlign.center),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "You defeated the boss!\nYour Score: $currentScore",
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.home, size: 32),
+                  onPressed: () =>
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/', // Main home route
-                        (route) => false,
-                      );
-                    },
+                    '/',
+                    (route) => false,
                   ),
-                  // Restart the game
-                  IconButton(
-                    icon: const Icon(Icons.restart_alt, size: 32),
-                    onPressed: () {
+                ),
+                IconButton(
+                  icon: const Icon(Icons.restart_alt, size: 32),
+                  onPressed: () =>
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/game', // Game route
-                        (route) => false,
-                      );
-                    },
+                    '/game',
+                    (route) => false,
                   ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -144,14 +176,13 @@ class _Game2State extends State<Game2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Level 2"),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
-              // Add your settings logic here
-              print("Settings clicked");
+              // Placeholder for settings logic
             },
           ),
         ],
@@ -172,9 +203,7 @@ class _Game2State extends State<Game2> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 IconButton(
-                  icon: Icon(
-                    isMusicOn ? Icons.volume_up : Icons.volume_off,
-                  ),
+                  icon: Icon(isMusicOn ? Icons.volume_up : Icons.volume_off),
                   onPressed: () {
                     setState(() {
                       isMusicOn = !isMusicOn;
@@ -189,17 +218,13 @@ class _Game2State extends State<Game2> {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Image.asset(
-                    'lib/assets/images/boss2.jpg',
-                  ),
+                  child: Image.asset('lib/assets/images/boss2.jpg'),
                 ),
                 if (_bossDialogue != null)
                   Positioned(
                     top: 16.0,
                     right: 16.0,
-                    child: BossDialogue(
-                      dialogue: _bossDialogue!,
-                    ),
+                    child: BossDialogue(dialogue: _bossDialogue!),
                   ),
               ],
             ),

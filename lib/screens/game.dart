@@ -19,7 +19,7 @@ class _MyGameState extends State<MyGame> {
   int currentScore = 0;
   int highestScore = 0;
   bool isMusicOn = true;
-  int _bossHealth = 100;
+  int _bossHealth = 99; // Initialize to 99 to avoid game over at start
   Timer? _healthRegenTimer;
   late List<Attack> levelAttacks;
 
@@ -46,6 +46,10 @@ class _MyGameState extends State<MyGame> {
           _bossHealth += 10;
           if (_bossHealth > 100) _bossHealth = 100;
         });
+
+        if (_bossHealth == 100) {
+          _showGameOverDialog();
+        }
       }
     });
   }
@@ -74,7 +78,6 @@ class _MyGameState extends State<MyGame> {
             currentScore: currentScore,
             highestScore: highestScore,
             isMusicOn: isMusicOn,
-            bossHealth: _bossHealth,
           ),
         ),
       );
@@ -95,6 +98,46 @@ class _MyGameState extends State<MyGame> {
     });
   }
 
+  void _showGameOverDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text("Game Over"),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("The boss is back with all mighty powers."),
+              const SizedBox(height: 8.0),
+              Text("Score: $currentScore"),
+              const SizedBox(height: 4.0),
+              Text("High Score: $highestScore"),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              setState(() {
+                _bossHealth = 99; // Restart game
+                currentScore = 0;
+                levelAttacks =
+                    attacks.where((attack) => attack.level == 1).toList();
+              });
+            },
+            child: const Text("Restart"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Exit"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,23 +147,19 @@ class _MyGameState extends State<MyGame> {
       ),
       body: Column(
         children: [
-          // Row above the boss image, containing the audio icon, score, and high score
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Current Score
                 Text(
                   "Score: $currentScore",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                // High Score
                 Text(
                   "High Score: $highestScore",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                // Audio Widget
                 Audio(
                   isMusicOn: isMusicOn,
                   musicUrl: musicUrl,
@@ -129,7 +168,6 @@ class _MyGameState extends State<MyGame> {
               ],
             ),
           ),
-          // Boss Image and Dialogue
           Expanded(
             flex: 2,
             child: Stack(
@@ -149,7 +187,6 @@ class _MyGameState extends State<MyGame> {
               ],
             ),
           ),
-          // Boss Health Bar
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -183,7 +220,6 @@ class _MyGameState extends State<MyGame> {
               ],
             ),
           ),
-          // Attack Options
           Expanded(
             flex: 1,
             child: AttackIconList(
