@@ -23,4 +23,5 @@ flutter:
     - lib/assets/images/boss.jpg
     - lib/assets/images/boss2.jpg
     - lib/assets/images/logo.png
+    - lib/assets/images/google.png
     - lib/assets/audio/bgmusic.mp3
