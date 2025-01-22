@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../widgets/attack_icon_list.dart';
 import '../widgets/boss_dialogue.dart';
 import '../models/attacks.dart';
-// Import the custom Audio widget
 
 class Game2 extends StatefulWidget {
   final int currentScore;
@@ -75,7 +74,10 @@ class _Game2State extends State<Game2> {
       }
 
       _bossHealth -= damageValue;
-      if (_bossHealth < 0) _bossHealth = 0;
+      if (_bossHealth <= 0) {
+        _bossHealth = 0;
+        _showWinnerPopup(); // Show the winner pop-up
+      }
     });
 
     _startHealthRegenTimer();
@@ -87,6 +89,57 @@ class _Game2State extends State<Game2> {
     });
   }
 
+  void _showWinnerPopup() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Congratulations!",
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "You defeated the boss!\nYour Score: $currentScore",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Navigate to the home screen
+                  IconButton(
+                    icon: const Icon(Icons.home, size: 32),
+                    onPressed: () {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/', // Main home route
+                        (route) => false,
+                      );
+                    },
+                  ),
+                  // Restart the game
+                  IconButton(
+                    icon: const Icon(Icons.restart_alt, size: 32),
+                    onPressed: () {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/game', // Game route
+                        (route) => false,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +147,6 @@ class _Game2State extends State<Game2> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Level 2"),
         actions: [
-          // Replacing the audio widget with settings icon
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
@@ -106,7 +158,6 @@ class _Game2State extends State<Game2> {
       ),
       body: Column(
         children: [
-          // Score and High Score
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -120,7 +171,6 @@ class _Game2State extends State<Game2> {
                   "High Score: $highestScore",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
-                // Audio Icon
                 IconButton(
                   icon: Icon(
                     isMusicOn ? Icons.volume_up : Icons.volume_off,
@@ -134,8 +184,6 @@ class _Game2State extends State<Game2> {
               ],
             ),
           ),
-
-          // Boss Image and Dialogue
           Expanded(
             flex: 2,
             child: Stack(
@@ -156,8 +204,6 @@ class _Game2State extends State<Game2> {
               ],
             ),
           ),
-
-          // Boss Health Bar
           Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -191,13 +237,11 @@ class _Game2State extends State<Game2> {
               ],
             ),
           ),
-
-          // Attack Options
           Expanded(
             flex: 1,
             child: AttackIconList(
               onAttack: _performAttack,
-              attacks: level2Attacks, // Use Level 2 attacks
+              attacks: level2Attacks,
             ),
           ),
         ],
