@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "566260733153",
+    "project_id": "ragearcade-4fa14",
+    "storage_bucket": "ragearcade-4fa14.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566260733153:android:600cbd7de59a299e6753a0",
+        "android_client_info": {
+          "package_name": "com.infangle.ragearcade"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZtqnA_0zmjesDjoFafETvPeS8EDbyLqI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

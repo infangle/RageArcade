@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart'; // Import Firebase package
 import 'screens/splashscreen.dart'; // Import the SplashScreen class
 import 'auth/signup.dart'; // Import the SignUpPage class
+import 'auth/firebase_credentials.dart'; // Import Firebase credentials
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Ensure the Flutter binding is initialized
+  await Firebase.initializeApp(
+    options: FirebaseCredentials.options, // Pass FirebaseOptions here
+  );
+
   runApp(const MyApp());
 }
 
