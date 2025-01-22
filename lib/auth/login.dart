@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/home.dart'; // Import the HomePage
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -52,7 +53,13 @@ class LoginPage extends StatelessWidget {
               // Login Button
               ElevatedButton(
                 onPressed: () {
-                  // Handle login logic
+                  // Navigate to HomePage on successful login
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+
+                  // Show login success message
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Login successful!')),
                   );

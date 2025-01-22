@@ -39,7 +39,7 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
 
   // Navigate to SignUpPage after the splash screen
   void _navigateToSignUp() async {
-    await Future.delayed(const Duration(seconds: 5)); // Splash screen duration
+    await Future.delayed(const Duration(seconds: 3)); // Splash screen duration
     if (mounted) {
       Navigator.pushReplacement(
         context,
