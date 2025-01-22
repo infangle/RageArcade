@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../auth/login.dart'; // Import the LoginPage widget
 
-class SignUpPage extends StatelessWidget {
-  const SignUpPage({super.key});
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
 
   static const Color turquoise = Color(0xFF40E0D0); // Define turquoise color
 
@@ -10,7 +9,7 @@ class SignUpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
+        title: const Text('Rage Arcade'),
         backgroundColor: turquoise,
       ),
       body: Padding(
@@ -20,23 +19,13 @@ class SignUpPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text(
-                'Create an Account',
+                'Welcome',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: turquoise,
                 ),
                 textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              // Username Field
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
               ),
               const SizedBox(height: 20),
               // Email Field
@@ -59,30 +48,13 @@ class SignUpPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              // Confirm Password Field
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Confirm Password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
               const SizedBox(height: 30),
-              // Sign Up Button
+              // Login Button
               ElevatedButton(
                 onPressed: () {
-                  // Handle signup logic
-
-                  // Navigate to LoginPage after successful signup
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
+                  // Handle login logic
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Sign up complete!')),
+                    const SnackBar(content: Text('Login successful!')),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -93,12 +65,12 @@ class SignUpPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 15),
                 ),
                 child: const Text(
-                  'Sign Up',
+                  'Login',
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
               const SizedBox(height: 20),
-              // Divider for Google signup
+              // Divider for Google login
               Row(
                 children: const [
                   Expanded(child: Divider(thickness: 1, color: Colors.grey)),
@@ -113,13 +85,12 @@ class SignUpPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              // Sign Up with Google Button using PNG Asset
+              // Login with Google Button using PNG Asset
               ElevatedButton.icon(
                 onPressed: () {
-                  // Handle Google signup
+                  // Handle Google login
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Google Sign Up coming soon!')),
+                    const SnackBar(content: Text('Google Login coming soon!')),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -136,7 +107,7 @@ class SignUpPage extends StatelessWidget {
                   height: 24,
                 ),
                 label: Text(
-                  'Sign Up with Google',
+                  'Login with Google',
                   style: TextStyle(fontSize: 18, color: turquoise),
                 ),
               ),
