@@ -1,11 +1,11 @@
 {
-    "name": "testgame",
-    "short_name": "testgame",
+    "name": "Rage-Arcade",
+    "short_name": "Rage-Arcade",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "An exciting Flutter-based arcade game.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
