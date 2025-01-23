@@ -2,7 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
-    id 'com.google.gms.google-services' version '4.4.2' apply false
+    id 'com.google.gms.google-services' version '4.5.0' apply false
 }
 
 android {
@@ -29,7 +29,22 @@ android {
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug
+            signingConfig = signingConfigs.debug // Change to production signing config later
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('path_to_debug_keystore')
+            storePassword 'debug_keystore_password'
+            keyAlias 'debug_key_alias'
+            keyPassword 'debug_key_password'
+        }
+        release {
+            keyAlias 'release_key_alias'
+            keyPassword 'release_key_password'
+            storeFile file('path_to_release_keystore')
+            storePassword 'release_keystore_password'
         }
     }
 }
@@ -39,9 +54,12 @@ flutter {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:33.8.0') // Moved here
+    implementation platform('com.google.firebase:firebase-bom:34.0.0') // Firebase BOM version
     implementation 'com.google.firebase:firebase-firestore:29.0.2'
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth' // Firebase Auth (if needed)
+    implementation 'com.google.android.gms:play-services-auth:20.4.0'
+    implementation 'com.google.firebase:firebase-storage' // Firebase Storage (if needed)
 }
 
 apply plugin: 'com.google.gms.google-services'

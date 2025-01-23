@@ -1,10 +1,6 @@
 class SignUpService {
   // Method to validate signup input
-  String? validateInput(
-      String username, String email, String password, String confirmPassword) {
-    if (username.isEmpty) {
-      return 'Please enter your username';
-    }
+  String? validateInput(String email, String password, String confirmPassword) {
     if (email.isEmpty) {
       return 'Please enter your email';
     } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
