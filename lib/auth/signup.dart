@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'login.dart';
+import 'services/auth_service.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -12,9 +11,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final _firebaseAuth = FirebaseAuth.instance;
-  final _googleSignIn = GoogleSignIn();
-  final _firestore = FirebaseFirestore.instance;
+  final AuthService _authService = AuthService();
 
   String email = '';
   String password = '';
@@ -25,31 +22,21 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isPasswordVisible = false;
   bool _isLoading = false;
 
+  // Sign up with email and password
   void _signUpWithEmail() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       try {
-        UserCredential userCredential = await _firebaseAuth
-            .createUserWithEmailAndPassword(email: email, password: password);
+        // Create user
+        UserCredential userCredential =
+            await _authService.signUpWithEmail(email, password);
 
-        final userDoc = await _firestore
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .get();
-        if (!userDoc.exists) {
-          await _firestore
-              .collection('users')
-              .doc(userCredential.user!.uid)
-              .set({
-            'email': email,
-            'username': username.isEmpty ? null : username,
-            'highestScore': 0,
-          });
-        }
-
+        // Navigate directly to LoginPage after successful signup
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
+          MaterialPageRoute(
+            builder: (context) => const LoginPage(),
+          ),
         );
       } catch (e) {
         ScaffoldMessenger.of(context)
@@ -60,44 +47,19 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  // Sign in with Google
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      UserCredential userCredential = await _authService.signInWithGoogle();
+      await _authService.saveUserData(userCredential);
 
-      if (googleAuth != null) {
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-
-        UserCredential userCredential =
-            await _firebaseAuth.signInWithCredential(credential);
-
-        final userDoc = await _firestore
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .get();
-        if (!userDoc.exists) {
-          await _firestore
-              .collection('users')
-              .doc(userCredential.user!.uid)
-              .set({
-            'email': userCredential.user!.email,
-            'username': userCredential.user!.displayName ?? '',
-            'highestScore': 0,
-          });
-        }
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
-      }
+      // Navigate to LoginPage after successful Google sign-in
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
     } catch (e) {
-      // Enhanced error logging
       print('Google Sign-In Error: ${e.toString()}');
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
@@ -111,6 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
+        backgroundColor: Colors.cyan,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -119,7 +82,13 @@ class _SignUpPageState extends State<SignUpPage> {
           child: ListView(
             children: [
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.cyan),
+                  ),
+                ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -133,10 +102,15 @@ class _SignUpPageState extends State<SignUpPage> {
                   email = value;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 obscureText: !_isPasswordVisible,
                 decoration: InputDecoration(
                   labelText: 'Password',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.cyan),
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(_isPasswordVisible
                         ? Icons.visibility
@@ -160,10 +134,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   password = value;
                 },
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 obscureText: true,
-                decoration:
-                    const InputDecoration(labelText: 'Confirm Password'),
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.cyan),
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please confirm your password';
@@ -176,16 +156,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   confirmPassword = value;
                 },
               ),
-              TextFormField(
-                decoration:
-                    const InputDecoration(labelText: 'Username (Optional)'),
-                onChanged: (value) {
-                  username = value;
-                },
-              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _isLoading ? null : _signUpWithEmail,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.cyan),
                 child: _isLoading
                     ? const CircularProgressIndicator()
                     : const Text('Sign Up'),
@@ -195,6 +169,17 @@ class _SignUpPageState extends State<SignUpPage> {
                 onPressed: _isLoading ? null : _signInWithGoogle,
                 icon: const Icon(Icons.login),
                 label: const Text('Sign Up with Google'),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.cyan),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                },
+                child: const Text('Already have an account? Login'),
               ),
             ],
           ),

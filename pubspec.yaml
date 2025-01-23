@@ -15,6 +15,7 @@ dependencies:
   firebase_core: ^3.10.1 # Added Firebase Core for initialization
   cloud_firestore: ^5.6.2 # Added Cloud Firestore for database functionality
   google_sign_in: ^6.2.2  # Google Sign-In dependency
+  mailer: ^6.4.1
   
 dev_dependencies:
   flutter_test:

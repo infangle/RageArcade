@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
-        backgroundColor: Colors.teal, // Turquoise theme
+        backgroundColor: Colors.cyan, // Cyan theme
       ),
       body: Center(
         child: Padding(
@@ -52,7 +52,13 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Username'),
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.cyan),
+                    ),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your username';
@@ -63,8 +69,15 @@ class _LoginPageState extends State<LoginPage> {
                     username = value;
                   },
                 ),
+                SizedBox(height: 20),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Password'),
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.cyan),
+                    ),
+                  ),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -81,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: _login,
                   child: const Text('Login'),
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal), // Turquoise theme
+                      backgroundColor: Colors.cyan), // Cyan theme
                 ),
                 TextButton(
                   onPressed: () {
