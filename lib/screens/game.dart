@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'game2.dart'; // Next level screen
-
 import '../widgets/attack_icon_list.dart'; // Attack options widget
 import '../widgets/boss_dialogue.dart'; // Dialogue widget
 import '../models/attacks.dart'; // Attack model
 import '../widgets/audio.dart'; // Import the Audio widget
+import '../auth/services/high_score_service.dart'; // Import HighScoreService
+import 'home.dart'; // Import home.dart for navigation
 
 class MyGame extends StatefulWidget {
   const MyGame({super.key});
@@ -25,6 +26,8 @@ class _MyGameState extends State<MyGame> {
 
   final String musicUrl =
       'https://example.com/game-music.mp3'; // Replace with your music URL
+  final HighScoreService _highScoreService =
+      HighScoreService(); // Initialize HighScoreService
 
   @override
   void initState() {
@@ -99,6 +102,10 @@ class _MyGameState extends State<MyGame> {
   }
 
   void _showGameOverDialog() {
+    // Save high score when game is over
+    _highScoreService.saveHighScore('playerId', 'username',
+        highestScore); // Replace with actual playerId and username
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -120,6 +127,18 @@ class _MyGameState extends State<MyGame> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
+              // Navigate to home.dart
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+            },
+            child: const Text("Home"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // Restart the game
               setState(() {
                 _bossHealth = 99; // Restart game
                 currentScore = 0;
@@ -128,10 +147,6 @@ class _MyGameState extends State<MyGame> {
               });
             },
             child: const Text("Restart"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Exit"),
           ),
         ],
       ),
