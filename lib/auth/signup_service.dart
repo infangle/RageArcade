@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class SignUpService {
   // Method to validate signup input
   String? validateInput(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:just_audio/just_audio.dart';
 
 class Audio extends StatefulWidget {
   final bool isMusicOn;
@@ -43,10 +43,10 @@ class _AudioState extends State<Audio> {
 
   Future<void> _initializeMusic() async {
     try {
-      await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+      await _audioPlayer.setLoopMode(LoopMode.all);
       if (widget.isMusicOn) {
-        await _audioPlayer.setSourceUrl(widget.musicUrl); // Set the source
-        await _audioPlayer.resume(); // Start playing
+        await _audioPlayer.setUrl(widget.musicUrl); // Set the source
+        await _audioPlayer.play(); // Start playing
       }
     } catch (e) {
       debugPrint('Error initializing music: $e');
@@ -58,8 +58,8 @@ class _AudioState extends State<Audio> {
       if (widget.isMusicOn) {
         await _audioPlayer.pause(); // Pause if music is currently on
       } else {
-        await _audioPlayer.setSourceUrl(widget.musicUrl); // Reset source
-        await _audioPlayer.resume(); // Play if music is off
+        await _audioPlayer.setUrl(widget.musicUrl); // Reset source
+        await _audioPlayer.play(); // Play if music is off
       }
       widget.onToggle(!widget.isMusicOn); // Notify parent about toggle
     } catch (e) {
