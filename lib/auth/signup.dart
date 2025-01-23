@@ -53,7 +53,7 @@ class _SignUpPageState extends State<SignUpPage> {
         );
       } catch (e) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
+            .showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
       } finally {
         setState(() => _isLoading = false);
       }
@@ -97,8 +97,10 @@ class _SignUpPageState extends State<SignUpPage> {
         );
       }
     } catch (e) {
+      // Enhanced error logging
+      print('Google Sign-In Error: ${e.toString()}');
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+          .showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
     } finally {
       setState(() => _isLoading = false);
     }
