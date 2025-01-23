@@ -8,6 +8,22 @@ Rage-Arcade is an exciting Flutter-based arcade game that offers a thrilling gam
 - Support for both mobile and web platforms.
 - Easy to navigate user interface.
 
+##signup
+<img width="501" alt="Image" src="https://github.com/user-attachments/assets/764a5879-75f7-4f56-8d86-062d7d545ff1" />
+
+##login
+<img width="499" alt="Image" src="https://github.com/user-attachments/assets/6b8ec8d2-c4a0-42ae-8010-bca9db198219" />
+
+##homePage
+<img width="502" alt="Image" src="https://github.com/user-attachments/assets/7a054a19-1207-4fb7-b485-f7ae5e00dae9" />
+
+##level-1
+<img width="495" alt="Image" src="https://github.com/user-attachments/assets/2664945f-fedb-4b84-a4c8-b2eacb498443" />
+
+##game-over
+<img width="485" alt="Image" src="https://github.com/user-attachments/assets/70b07115-03a5-4b7a-a2b8-b7d4a4d627f6" />
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application. Follow the instructions below to set up the project locally.
